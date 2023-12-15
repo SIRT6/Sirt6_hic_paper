@@ -230,4 +230,44 @@ ggsave('anno_whole_dif.png', plot = anno_whole_dif,
        width = 7, height = 6, dpi = 300)
 
 
+######------Number of differential peaks------######
 
+load('dif no old 3/anno_atac_dif.RData')
+names(anno_atac_dif)
+
+# narrow_df <- data.frame (R1 = c(nrow(narrowPeaks$KO_R1), nrow(narrowPeaks$WT_R1), nrow(narrowPeaks$young_R1), nrow(narrowPeaks$old_R1)),
+#                          R2 = c(nrow(narrowPeaks$KO_R2), nrow(narrowPeaks$WT_R2), nrow(narrowPeaks$young_R2), nrow(narrowPeaks$old_R2)),
+#                          R3 = c(nrow(narrowPeaks$KO_R3), nrow(narrowPeaks$WT_R3), nrow(narrowPeaks$young_R3), NA),
+#                          row.names = c('KO', 'WT', 'young', 'old'))
+
+narrow_df <- data.frame(sample = names(anno_atac_dif)[1:5],
+                        num_peaks = c(length(anno_atac_dif$KO_old_dif@anno),
+                                      length(anno_atac_dif$KO_WT_dif@anno),
+                                      length(anno_atac_dif$KO_young_dif@anno),
+                                      length(anno_atac_dif$old_WT_dif@anno),
+                                      length(anno_atac_dif$old_young_dif@anno)))
+# narrow_df$type <- factor(narrow_df$type, levels = c('WT', 'KO', 'young', 'old'))
+
+ggplot(narrow_df, aes(x=sample, y=num_peaks, fill = sample)) +
+  geom_bar(stat="identity") +
+  ggtitle('Number of differential ATAC-seq peaks') +
+  ylab('Number of peaks') +
+  xlab('Pair of comparison') +
+  # ylim(c(7500, 42500)) +
+  theme(legend.position="none") +
+  scale_fill_brewer(palette="RdYlBu") +
+  geom_text(aes(label=num_peaks), vjust=-0.5, color="black",
+            position = position_dodge(0.9), size=5.5) +
+  theme(panel.background = element_rect(color='grey',fill = "white"),
+        panel.grid.major = element_line(size = 0.5, linetype = 'solid',
+                                        colour = "grey"),
+        plot.title = element_text(size=16)) +
+  theme(axis.text=element_text(size=12)) +
+  theme(axis.title = element_text(size = 15)) +
+  theme(axis.text.y = element_text(angle = 90, vjust = 0.5, hjust=0.5)) +
+  scale_x_discrete(labels=c("KO_old_dif" = "KO vs Old", "KO_WT_dif" = "KO vs WT", 'KO_young_dif' = 'KO vs Young',
+                            'old_WT_dif' = 'Old vs WT', 'old_young_dif' = 'Old vs Young'))
+  
+
+ggsave(('pictures/Differential peak numbers.png'),
+       width = 6.5, height = 6.2, dpi = 500)
