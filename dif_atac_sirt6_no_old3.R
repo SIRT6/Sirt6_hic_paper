@@ -55,6 +55,24 @@ consensusToCount <- consensusToCount[!consensusToCount %over% blacklist_mm10
 
 save(consensusToCount, file = "dif no old 3/consensusToCount_sirt6.RData")                    ###go to server
 
+################################################################################
+# commands on server:
+### Counting for differential ATAC-seq ###    path: /tank/projects/Anna/sirt6_dif/
+
+load('consensusToCount_sirt6_no_old3.RData')
+
+# order for bams: "KO_R1", "KO_R2", "KO_R3", "old_R1", "old_R2", "WT_R1", "WT_R2", "WT_R3", "young_R1", "young_R2", "young_R3"
+bamsToCount <- dir("/tank/projects/sirt6_atacseq_golova/Results/nextflow_my2/results/bwa/mergedLibrary/", full.names = TRUE, pattern = "*.\\.bam$")
+
+library(DESeq2)
+regionsToCount <- data.frame(GeneID = paste("ID", seqnames(consensusToCount), start(consensusToCount), end(consensusToCount), sep = "_"), Chr = seqnames(consensusToCount), Start = start(consensusToCount), End = end(consensusToCount), Strand = strand(consensusToCount))
+
+library(Rsubread)
+fcResults <- featureCounts(bamsToCount, annot.ext = regionsToCount, isPairedEnd = TRUE, countMultiMappingReads = FALSE, maxFragLength = 100)
+
+myCounts <- fcResults$counts
+colnames(myCounts) <- c("KO_R1", "KO_R2", "KO_R3", "old_R1", "old_R2", "old_R3", "WT_R1", "WT_R2", "WT_R3", "young_R1", "young_R2", "young_R3")
+save(myCounts, file = "/tank/projects/Anna/sirt6_dif/countsFromATAC_sirt6_no_old3.RData")                          
 
 ################################################################################
 library(DESeq2)
@@ -96,6 +114,10 @@ plotPCA(atac_Rlog, intgroup = "Group", ntop = nrow(atac_Rlog), returnData = F) +
 # ggsave('PCA_sirt6_all.png', height = 6, width = 7.5, dpi = 600)
 ggsave('PCA_sirt6_no_old_3_new.png', height = 5, width = 7, dpi = 500)
 
+
+
+######------All dif peaks combo------######
+
 library(BSgenome.Mmusculus.UCSC.mm10)
 library(tracktables)
 
@@ -106,80 +128,7 @@ save(WT_KO_dif, file='dif no old 3/WT_KO_dif.RData')
 young_old_dif <- results(atacDDS, c("Group", "old", "young"), format = "GRanges")
 young_old_dif <- young_old_dif[order(young_old_dif$pvalue)]
 save(young_old_dif, file='dif no old 3/young_old_dif.RData')
-
-
-WT_KO_dif_df <- as.data.frame(WT_KO_dif)
-young_old_dif_df <- as.data.frame(young_old_dif)   #NA in padj
-
-
-# Select significant values (without old3)
-
-nrow(WT_KO_dif_df) #66318
-nrow(WT_KO_dif_df[WT_KO_dif_df$padj<0.05,]) #537
-nrow(WT_KO_dif_df[WT_KO_dif_df$pvalue<0.05,]) #7306
-
-nrow(young_old_dif_df) #66318
-nrow(young_old_dif_df[young_old_dif_df$padj<0.05,]) #18283
-nrow(young_old_dif_df[young_old_dif_df$pvalue<0.05,]) #11483
-
-nrow(WT_KO_dif_df[WT_KO_dif_df$padj<0.05 & WT_KO_dif_df$log2FoldChange > log2(1.5),]) #235
-nrow(young_old_dif_df[young_old_dif_df$padj<0.05 & young_old_dif_df$log2FoldChange > log2(1.5),]) #3287
-
-
-
-#Select values in SIRT6 locus
-
-start <- 81619787 - 1000000
-end <- 81629797 + 1000000
-
-# load('dif no old 3/WT_KO_dif.RData')
-# load('dif no old 3/young_old_dif.RData')
-
-WT_KO_dif_df <- as.data.frame(WT_KO_dif)
-young_old_dif_df <- as.data.frame(young_old_dif)
-
-nrow(WT_KO_dif_df) #66318
-nrow(young_old_dif_df) #66318
-
-WT_KO_dif_df <- na.omit(WT_KO_dif_df)  #there were no missing values
-young_old_dif_df <- na.omit(young_old_dif_df)  #12858 rows were removed
-
-nrow(WT_KO_dif_df) #66318
-nrow(young_old_dif_df) #53460
-
-
-# WT_KO_locus <- WT_KO_dif_df[WT_KO_dif_df$padj<0.05 & WT_KO_dif_df$log2FoldChange > log2(1.5),]
-WT_KO_locus <- filter(WT_KO_locus, padj<0.05)
-# WT_KO_locus <- WT_KO_dif_df[WT_KO_dif_df$padj<0.05,] #without lfc
-WT_KO_locus$st_sirt <- start
-WT_KO_locus$st_max <- ifelse(WT_KO_locus$start > WT_KO_locus$st_sirt, WT_KO_locus$start, WT_KO_locus$st_sirt)
-WT_KO_locus$end_sirt <- end
-WT_KO_locus$end_min <- ifelse(WT_KO_locus$end > WT_KO_locus$end_sirt, WT_KO_locus$end_sirt, WT_KO_locus$end)
-WT_KO_locus$over <- WT_KO_locus$end_min - WT_KO_locus$st_max
-WT_KO_peaks_in_locus <- WT_KO_locus[WT_KO_locus$over > 0,]
-nrow(WT_KO_peaks_in_locus) #2 - no in chr10
-
-write.csv2(WT_KO_peaks_in_locus, file = 'dif no old 3/WT_KO_peaks_in_locus.csv', quote = F)
-
-
-# young_old_locus <- young_old_dif_df[young_old_dif_df$padj<0.05 & young_old_dif_df$log2FoldChange > log2(1.5),]
-young_old_locus <- filter(young_old_dif_df, padj<0.05)
-# young_old_locus <- young_old_dif_df[young_old_dif_df$padj<0.05,]  #without lfc
-young_old_locus$st_sirt <- start
-young_old_locus$st_max <- ifelse(young_old_locus$start > young_old_locus$st_sirt, young_old_locus$start, young_old_locus$st_sirt)
-young_old_locus$end_sirt <- end
-young_old_locus$end_min <- ifelse(young_old_locus$end > young_old_locus$end_sirt, young_old_locus$end_sirt, young_old_locus$end)
-young_old_locus$over <- young_old_locus$end_min - young_old_locus$st_max
-young_old_peaks_in_locus <- young_old_locus[young_old_locus$over > 0,]
-nrow(young_old_peaks_in_locus) #60
-young_old_peaks_in_locus <- young_old_peaks_in_locus[young_old_peaks_in_locus$seqnames == 'chr10',]
-nrow(young_old_peaks_in_locus) #7 - chr10
-
-write.csv2(young_old_peaks_in_locus, file = 'dif no old 3/young_old_peaks_in_locus.csv', quote = F)
-
-
-
-######------All dif peaks combo------######
+                           
 KO_WT_dif <- results(atacDDS, c("Group", "KO", "WT"), format = "GRanges")
 KO_WT_dif <- KO_WT_dif[order(KO_WT_dif$pvalue)]
 # save(KO_WT_dif, file='dif no old 3/dif peaks/KO_WT_dif.RData')
@@ -204,16 +153,6 @@ old_WT_dif <- old_WT_dif[order(old_WT_dif$pvalue)]
 young_WT_dif <- results(atacDDS, c("Group", "young", 'WT'), format = "GRanges")
 young_WT_dif <- young_WT_dif[order(young_WT_dif$pvalue)]
 # save(young_WT_dif, file='dif no old 3/dif peaks/young_WT_dif.RData')
-
-
-
-
-
-
-load('dif no old 3/dif peaks/KO_old_dif.RData')
-sample <- as.data.frame(KO_old_dif)
-sample <- filter(sample, padj<0.05)
-nrow(sample)
 
 
 
