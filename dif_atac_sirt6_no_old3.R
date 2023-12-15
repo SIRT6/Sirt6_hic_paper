@@ -76,7 +76,7 @@ save(myCounts, file = "/tank/projects/Anna/sirt6_dif/countsFromATAC_sirt6_no_old
 ################################################################################
 library(DESeq2)
 load('dif no old 3/countsFromATAC_sirt6_no_old3.RData')
-# load("dif no old 3/consensusToCount_sirt6.RData")
+
 metaData <- data.frame(Group, row.names = colnames(myCounts))
 atacDDS <- DESeqDataSetFromMatrix(myCounts, metaData, ~Group, rowRanges = consensusToCount)
 atacDDS <- DESeq(atacDDS)
@@ -88,14 +88,10 @@ load("dif no old 3/atacDDS_all.RData")
 
 #PCA plot
 atac_Rlog <- rlog(atacDDS)
-# p <- plotPCA(atac_Rlog, intgroup = "Group", ntop = nrow(atac_Rlog), returnData = F)
 
 library(ggplot2)
 library(ggfortify)
 library(ggrepel)
-# library(ReportingTools)
-
-# atac_Rlog_df <- makeDESeqDF(atacDDS)
 
 plotPCA(atac_Rlog, intgroup = "Group", ntop = nrow(atac_Rlog), returnData = F) +
   # geom_label(aes(label = name), size = 3) +
@@ -235,18 +231,13 @@ ggsave('anno_whole_dif.png', plot = anno_whole_dif,
 load('dif no old 3/anno_atac_dif.RData')
 names(anno_atac_dif)
 
-# narrow_df <- data.frame (R1 = c(nrow(narrowPeaks$KO_R1), nrow(narrowPeaks$WT_R1), nrow(narrowPeaks$young_R1), nrow(narrowPeaks$old_R1)),
-#                          R2 = c(nrow(narrowPeaks$KO_R2), nrow(narrowPeaks$WT_R2), nrow(narrowPeaks$young_R2), nrow(narrowPeaks$old_R2)),
-#                          R3 = c(nrow(narrowPeaks$KO_R3), nrow(narrowPeaks$WT_R3), nrow(narrowPeaks$young_R3), NA),
-#                          row.names = c('KO', 'WT', 'young', 'old'))
-
 narrow_df <- data.frame(sample = names(anno_atac_dif)[1:5],
                         num_peaks = c(length(anno_atac_dif$KO_old_dif@anno),
                                       length(anno_atac_dif$KO_WT_dif@anno),
                                       length(anno_atac_dif$KO_young_dif@anno),
                                       length(anno_atac_dif$old_WT_dif@anno),
                                       length(anno_atac_dif$old_young_dif@anno)))
-# narrow_df$type <- factor(narrow_df$type, levels = c('WT', 'KO', 'young', 'old'))
+
 
 ggplot(narrow_df, aes(x=sample, y=num_peaks, fill = sample)) +
   geom_bar(stat="identity") +
