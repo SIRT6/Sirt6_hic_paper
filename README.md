@@ -10,3 +10,7 @@ SIRT6 enhancers
 2) Annotation of the differential peaks
 3) Barplot with annotation all differential peaks
 4) Pictures with number of differential peaks
+
+## GO_dif.R
+1) GO Annotation of differential peaks
+2) GO-plots
