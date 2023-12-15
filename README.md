@@ -1,5 +1,5 @@
-# Enhancers
-SIRT6 enhancers
+# SIRT6 Enhancers
+
 
 ## anno_atac.R
 1) Annotation of the *narrowPeak files
