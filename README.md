@@ -14,3 +14,6 @@
 ## GO_dif.R
 1) GO Annotation of differential peaks
 2) GO-plots
+
+## promoter_filter.R
+Filtering narrow peaks and differential peaks from promoter regions (4 resulting files: narrow/dif peaks + only promoters/without promoters)
