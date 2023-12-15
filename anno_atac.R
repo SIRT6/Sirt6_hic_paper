@@ -65,7 +65,7 @@ save(over_sitr6_Dist_Intron, file = 'over_sitr6_Dist_Intron.RData')
 ######------Enhancers overlaps------######
 library(regioneR)
 
-enh_mm10_cortex <- read.csv('C:/Users/Аня/Desktop/Research/SIRT6_enh/enh_mm10_sirt6_cortex.bed', header = F, sep='\t')
+enh_mm10_cortex <- read.csv('/Users/annaponomareva/Documents/Research/SIRT6_enh/enh_mm10_sirt6_cortex.bed', header = F, sep='\t')
 colnames(enh_mm10_cortex) <- c('seqnames', 'start', 'end')
 # enh_mm10_cortex <- makeGRangesFromDataFrame(enh_mm10_cortex, keep.extra.columns = T)
 
