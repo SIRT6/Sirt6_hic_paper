@@ -8,7 +8,6 @@ library(dplyr)
 library(tidyr)
 library(soGGi)
 
-
 peaks <- dir(path = 'narrowPeak_no_old3', pattern = "*.narrowPeak", full.names = TRUE)
 myPeaks <- lapply(peaks, ChIPQC:::GetGRanges, simple = TRUE)
 
@@ -155,8 +154,80 @@ young_WT_dif <- young_WT_dif[order(young_WT_dif$pvalue)]
 # save(young_WT_dif, file='dif no old 3/dif peaks/young_WT_dif.RData')
 
 
+                           
+######------Annotation of dif peaks + Barplot------######                           
+library(ChIPseeker)
+library(Rsubread)
+library(GenomicRanges)
+require(TxDb.Mmusculus.UCSC.mm10.knownGene)
+library(ggplot2)
 
+anno_atac_dif <- c()
+bar_atac_dif <- c()
 
+atac_peaks <- dir(path = '/Users/annaponomareva/Documents/Research/SIRT6_enh/dif no old 3/dif peaks/', 
+                  pattern = "*.RData", full.names = TRUE)
+difpeak_names <- c('KO_old_dif', 'KO_WT_dif', 'KO_young_dif', 'old_WT_dif', 'old_young_dif', 'young_WT_dif')
+
+new_colors_11 <- c("#00CD00", "bisque", '#FF7F50', '#FFA07A', 'gold1',
+                      'lightgoldenrod1', 'lightskyblue', '#FF83FA', 'seashell4','#CDC5BF','seashell2')
+new_colors_10 <- c("#00CD00", '#FF7F50', '#FFA07A', 'gold1',
+                      'lightgoldenrod1', 'lightskyblue', '#FF83FA', 'seashell4','#CDC5BF','seashell2')                     
+
+for (i in 1:length(atac_peaks)) {
+  sample <- as.data.frame(get(load(atac_peaks[i])))
+  sample <- filter(sample, padj<0.05)
+  
+  if (nrow(sample) > 0) {
+    sample <- makeGRangesFromDataFrame(sample, keep.extra.columns = T)
+    sample_Anno <- annotatePeak(sample, tssRegion = c(-3000, 3000), TxDb = TxDb.Mmusculus.UCSC.mm10.knownGene)
+    
+    anno_atac_dif <- append(anno_atac_dif, sample_Anno)
+    
+    if (nrow(sample_Anno@anno@elementMetadata[grepl("Downstream", sample_Anno@anno@elementMetadata$annotation) == T,])>0) {
+      sample_bar <- plotAnnoBar(sample_Anno) +
+        ggtitle(difpeak_names[i]) +
+        geom_bar(stat = "identity") +
+        scale_fill_manual(values = new_colors_11, 
+                          name = "Features")
+      
+      bar_atac_dif[[i]] <- sample_bar
+    } else {
+      sample_bar <- plotAnnoBar(sample_Anno) +
+        ggtitle(difpeak_names[i]) +
+        geom_bar(stat = "identity") +
+        scale_fill_manual(values = new_colors_10, 
+                          name = "Features")
+      
+      bar_atac_dif[[i]] <- sample_bar
+    }
+    
+  } else {
+    anno_atac_dif <- append(anno_atac_dif, 'no peaks')
+    bar_atac_dif[[i]] <- 'no peaks'
+  }
+}
+
+names(anno_atac_dif) <- difpeak_names   #numbers 1-6 are saved
+names(bar_atac_dif) <- difpeak_names
+
+# save(anno_atac_dif, file = 'dif no old 3/anno_atac_dif.RData')
+# save(bar_atac_dif, file = 'dif no old 3/bar_atac_dif.RData')
+
+load('dif no old 3/anno_atac_dif.RData')
+load('annotation ATAC/anno_atac.RData')
+
+new_colors_11_1 <- c("bisque","#00CD00", '#FF7F50', '#FFA07A', 'gold1',
+                            'lightgoldenrod1', 'lightskyblue', '#FF83FA', 'seashell4','#CDC5BF','seashell2')
+
+anno_whole_dif <- plotAnnoBar(anno_atac_dif[c(2,3,1,4,5)]) +           #all samples in one picture
+  ggtitle('Feature distribution') +
+  geom_bar(stat = "identity") +
+  scale_fill_manual(values = new_colors_11_1, 
+                    name = "Feature")
+
+ggsave('anno_whole_dif.png', plot = anno_whole_dif, 
+       width = 7, height = 6, dpi = 300)
 
 
 
