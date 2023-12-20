@@ -20,4 +20,8 @@ Filtering narrow peaks and differential peaks from promoter regions (4 resulting
 
 ## peaks_vs_genes.R
 1) Filtering narrow and differential peaks: get promoter+exon+intron regions
-2) 
+2) Plots for co-directional genes from "neuro"-categories (there are only 2 categories) for KO-WT dif peaks (promoter+exon+intron regions)
+3) Plot for co-directional unique genes from "neuro"-categories for KO-WT dif peaks (promoter+exon+intron regions)
+
+Pictures were obtained only for KO-WT, because "41419_2022_5542_MOESM2_ESM.xlsx" (data about gene expression from mitohondial article) contains
+info only about KO-WT pair
