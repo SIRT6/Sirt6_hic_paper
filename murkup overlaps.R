@@ -13,10 +13,10 @@ library(regioneR)
 ls('package:regioneR')
 
 
-##################------ Active, Primed, Latent + Peaks ------##################
-enhancer_types_narrow <- enhancer_types[enhancer_types$enh_type == 'active' |
-                                          enhancer_types$enh_type == 'primed' |
-                                          enhancer_types$enh_type == 'latent',]
+##################------ Enhancers + Narrow Peaks ------##################
+# enhancer_types_narrow <- enhancer_types[enhancer_types$enh_type == 'active' |
+#                                           enhancer_types$enh_type == 'primed' |
+#                                           enhancer_types$enh_type == 'latent',]
 narrow_overlap <- c()
 for (i in 1:length(anno_atac_no_p)) {
   peak <- anno_atac_no_p[[i]]
@@ -34,9 +34,9 @@ save(narrow_overlap, file = 'narrow_overlap.RData')
 
 
 
-##################------ Poised, Repressed + Dif.Peaks ------##################
-enhancer_types_dif <- enhancer_types[enhancer_types$enh_type == 'poised' |
-                                          enhancer_types$enh_type == 'repressed',]
+##################------ Enhancers + Dif.Peaks ------##################
+# enhancer_types_dif <- enhancer_types[enhancer_types$enh_type == 'poised' |
+#                                           enhancer_types$enh_type == 'repressed',]
 dif_overlap <- c()
 for (i in 1:length(anno_atac_dif_no_p)) {
   peak <- anno_atac_dif_no_p[[i]]
@@ -97,13 +97,16 @@ number_overlaps$fract_overlap <- (number_overlaps$num_overlaps) / (number_overla
 
 save(number_overlaps, file = 'number_overlaps.RData')
 
+
+
+###################--------------Barplots: Number of potential enhancers-------------###################
+
 load('number_overlaps.RData')
 load('enhancer_types.RData')
 load('narrow_overlap.RData')
 load('dif_overlap.RData')
 enhancer_types
 number_overlaps
-
 
 ggplot(number_overlaps[!(number_overlaps$type=='poised'| number_overlaps$type=='repressed'),][1:33,], aes(x=sample, y=fract_overlap, fill = type)) +
   geom_bar(position="dodge", stat="identity") +
