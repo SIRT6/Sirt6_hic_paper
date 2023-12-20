@@ -17,3 +17,7 @@
 
 ## promoter_filter.R
 Filtering narrow peaks and differential peaks from promoter regions (4 resulting files: narrow/dif peaks + only promoters/without promoters)
+
+## peaks_vs_genes.R
+1) Filtering narrow and differential peaks: get promoter+exon+intron regions
+2) 
