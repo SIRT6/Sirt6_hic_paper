@@ -32,3 +32,8 @@ Creating a table with enhancer types (from ChIP-seq data): active, latent, prime
 ## enhancer_annotation_overlaps.R
 1) Creating a table with enhancer candidates (overlapping narrow and dif peaks with ChIP-seq annotation)
 2) Plots with number of potential enhancers (narrow, differential, UP/DOWN)
+
+## HOMER_motifs
+Commands, which I have tried to use during motifs search
+/tank/projects/ponomareva_anna/homer/result2 - cajal path to resulting files
+no_p_KO_WT.bed - KO-WT differential peaks from promoter regions (as an example)
