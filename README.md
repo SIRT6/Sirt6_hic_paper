@@ -1,2 +1,2 @@
-## Chromatin alterations in SIRT6-KO neurons
-This repo contains the source code for the future manuscript on chromatin rearrangements in SIRT6-KO cortical neurons.
+## The divergent 3D genome landscapes of aging and neurodegenerative mouse models
+This repo contains the source code for the manuscript "The divergent 3D genome landscapes of aging and neurodegenerative mouse models".
