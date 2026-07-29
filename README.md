@@ -1,6 +1,6 @@
 [![DOI:10.1101/2025.11.10.687599](http://img.shields.io/badge/DOI-10.1101/2025.11.10.687599-B31B1B.svg)](https://doi.org/10.1101/2025.11.10.687599)
 
-# SIRT6 Hi-C analysis
+# The Divergent 3D Genome Landscapes of Aging and Neurodegenerative mouse models
 
 This repository contains the notebooks to reproduce analyses and panels from the associated preprint.
 
