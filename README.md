@@ -29,6 +29,7 @@ The repository is organized by manuscript figure:
 | `Figure4_TADs.ipynb` | TAD analysis in aging and neurodegeneration models |
 | `Figure5.ipynb` | Transcriptomic, pathway-enrichment, and integrative analyses |
 | `FigureS2B.ipynb` | Coverage and mappability analysis for Supplementary Figure S2B |
+| `FigureS3G_Loops_and_CTCF.ipynb` | CTCF peak overlap at differential loop anchors, stratified by regulatory-element class |
 | `downsampling.py` | Helper script for creating and downsampling Cooler contact matrices |
 
 ## Requirements
