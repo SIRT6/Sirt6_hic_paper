@@ -66,9 +66,8 @@ stringr tidyr tidyverse tximport wesanderson
 If you use this code, please cite:
 
 Kashuk, E., Smirnov, D., Eremenko, E., Tsitrina, A., Kriukov, D., Golova, A.,
-Kaluski-Kopatch, S., Khrameeva, E., & Toiber, D. (2025). *The Divergent 3D
-Genome Landscapes of Aging and Neurodegenerative mouse models*. bioRxiv
-preprint, version 1. [https://doi.org/10.1101/2025.11.10.687599](https://doi.org/10.1101/2025.11.10.687599)
+Kaluski-Kopatch, S., Khrameeva, E., & Toiber, D. (2026). *The Divergent 3D
+Genome Landscapes of Aging and Neurodegenerative mouse models*. Genome Research. [https://doi.org/10.1101/gr.281732.125](https://doi.org/10.1101/gr.281732.125)
 
 ```bibtex
 @article{kashuk2025divergent,
@@ -77,10 +76,8 @@ preprint, version 1. [https://doi.org/10.1101/2025.11.10.687599](https://doi.org
              Kaluski-Kopatch, Shai and Khrameeva, Ekaterina and Toiber, Debra},
   title   = {The Divergent 3D Genome Landscapes of Aging and Neurodegenerative
              mouse models},
-  journal = {bioRxiv},
-  year    = {2025},
-  doi     = {10.1101/2025.11.10.687599},
-  url     = {https://www.biorxiv.org/content/10.1101/2025.11.10.687599v1},
-  note    = {Preprint, version 1}
+  journal = {Genome Research},
+  year    = {2026},
+  doi     = {10.1101/gr.281732.125},
 }
 ```
